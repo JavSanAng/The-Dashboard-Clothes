@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 const ClothesSchema = new mongoose.Schema({
-    nombre:{
+    nombre: {
         type: String,
         required: true
     },
-    Descripcion:{
+    Descripcion: {
         type: String,
         required: true
     },
-    Imagen:{
+    Imagen: {
         type: String,
         required: true
     },
@@ -18,15 +18,11 @@ const ClothesSchema = new mongoose.Schema({
         enum: ['Camisetas', 'Pantalones', 'Zapatos', 'Accesorios'],
         required: true
     },
-    Talla:{
+    Talla: {
         type: String,
         enum: ['XS','S', 'M','L','XL'],
         required: true
     },
-    Descripcion: {
-        type: String,
-        required: true
-    }
 }, {timestamps:true});
 
 const Product = mongoose.model('Product', ClothesSchema );
