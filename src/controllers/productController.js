@@ -11,6 +11,7 @@ const showProducts = async (req, res) => {
                 <img src="${product.Imagen}" alt="${product.nombre}">
                 <p>Categoría: ${product.Categoria}</p>
                 <p>Talla: ${product.Talla}</p>
+                <p> Id: ${product.id}
             </li>`).join('');
 
         const html = `
@@ -112,7 +113,10 @@ const showNewProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const product = new Product(req.body);
+        console.log('datos recibidos', req.body)
+        const { nombre, Descripcion, Imagen, Categoria, Talla } = req.body;
+        const product = new Product({ nombre, Descripcion, Imagen, Categoria, Talla });
+        console.log({product});
         await product.save();
         res.redirect('/dashboard'); 
     } catch (error) {

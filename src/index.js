@@ -10,6 +10,7 @@ dbConnection();
 
 const port = process.env.PORT || 1234;
 
+app.use(express.json()); 
 app.use('/', router);
 
 app.listen (port, () => {
