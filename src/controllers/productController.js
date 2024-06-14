@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
-
+const mongoose = require('mongoose')
 
 const showProducts = async (req, res) => {
     try {
@@ -61,6 +61,10 @@ const showProductById = async (req, res) => {
                     <p>Categoría: ${product.Categoria}</p>
                     <p>Talla: ${product.Talla}</p>
                 </div>
+                 <form action="/dashboard/products/${product.id}/delete?_method=DELETE" method="POST">
+
+            <button type="submit">Delete Product</button>
+        </form>
             </body>
             </html>
         `;
@@ -82,7 +86,7 @@ const showNewProduct = async (req, res) => {
     </head>
     <body>
         <h1>Add New Product</h1>
-        <form action="/products" method="POST">
+        <form action="/dashboard" method="POST">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" required>
             <label for="Descripcion">Descripción:</label>
@@ -125,14 +129,20 @@ const createProduct = async (req, res) => {
     }
 };
 
-const showEditProduct = async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.productId);
-        if (!product) {
-            return res.status(404).send('Product not found');
-        }
 
-        res.send(`
+const showEditProduct = async (req, res) => {
+    
+    try {
+        const id = req.params.productId;
+        console.log('prueba', id);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send('Invalid Product ID');
+        }
+        console.log(id);
+        const product = await Product.findById(id);
+        console.log(product);
+
+        const html = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -142,7 +152,7 @@ const showEditProduct = async (req, res) => {
         </head>
         <body>
             <h1>Update Product</h1>
-            <form action="/dashboard/${product._id}" method="POST">
+            <form action="/dashboard/${product.id}?_method=PUT" method="POST">
                 <input type="hidden" name="_method" value="PUT">
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" name="nombre" value="${product.nombre}" required>
@@ -169,15 +179,18 @@ const showEditProduct = async (req, res) => {
         </form>
     </body>
     </html>
-    `);
+    `
+    res.send(html);
     }catch (error){
+        console.log(error)
         res.status(500).send ("Error updating product")
     }
     };
 
     const updateProduct = async (req, res) => {
         try {
-            await Product.findByIdAndUpdate(req.params.productId, req.body);
+            const id = req.params.productId;
+            await Product.findByIdAndUpdate(id);
             res.redirect('/dashboard'); 
         } catch (error) {
             console.error(error);
@@ -188,13 +201,16 @@ const showEditProduct = async (req, res) => {
 
     const deleteProduct = async (req, res) => {
         try {
-            await Product.findByIdAndDelete(req.params.productId);
+            const id = req.params.productId;
+            console.log(id)
+            await Product.findByIdAndDelete(id);
             res.redirect('/dashboard'); 
         } catch (error) {
             console.error(error);
             res.status(500).send({ message: 'There was a problem deleting the product' });
         }
     };
+    
 
     module.exports = {
         showProducts,

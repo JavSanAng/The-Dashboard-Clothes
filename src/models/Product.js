@@ -23,7 +23,7 @@ const ClothesSchema = new mongoose.Schema({
         enum: ['XS','S', 'M','L','XL'],
         required: true
     },
-}, {timestamps:true});
+}, {timestamps: true});
 
-const Product = mongoose.model('Product', ClothesSchema );
+const Product = mongoose.model('Product', ClothesSchema);
 module.exports = Product;
